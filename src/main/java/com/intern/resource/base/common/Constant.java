@@ -1,4 +1,4 @@
-package com.intern.resource;
+package com.intern.resource.base.common;
 
 public class Constant {
     public static final int SUCCESS_CODE = 1;

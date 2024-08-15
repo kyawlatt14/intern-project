@@ -1,4 +1,4 @@
-package com.intern.resource;
+package com.intern.resource.base.common;
 
 import lombok.Builder;
 import lombok.Data;

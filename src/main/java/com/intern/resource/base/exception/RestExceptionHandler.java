@@ -1,6 +1,6 @@
 package com.intern.resource.base.exception;
 
-import com.intern.resource.MSISResponse;
+import com.intern.resource.base.common.MSISResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

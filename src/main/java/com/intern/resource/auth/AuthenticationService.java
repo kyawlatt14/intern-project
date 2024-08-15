@@ -1,8 +1,8 @@
 package com.intern.resource.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intern.resource.Constant;
-import com.intern.resource.MSISResponse;
+import com.intern.resource.base.common.Constant;
+import com.intern.resource.base.common.MSISResponse;
 import com.intern.resource.base.config.IJwtService;
 import com.intern.resource.base.dto.UserDTO;
 import com.intern.resource.base.entity.Role;

@@ -1,6 +1,6 @@
 package com.intern.resource.auth;
 
-import com.intern.resource.MSISResponse;
+import com.intern.resource.base.common.MSISResponse;
 import com.intern.resource.base.dto.UserDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;

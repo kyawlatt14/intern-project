@@ -75,7 +75,7 @@ public class SecurityConfiguration {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8080/swagger-ui/**")); // Add your Swagger UI URL here
+    configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8080/swagger-ui/**"));
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(List.of("*"));
     configuration.setAllowCredentials(true);
