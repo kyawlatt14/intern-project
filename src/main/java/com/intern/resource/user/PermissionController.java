@@ -25,4 +25,5 @@ public class PermissionController {
         permissionService.deletePermission(permissionId);
         return ResponseEntity.noContent().build();
     }
+
 }
