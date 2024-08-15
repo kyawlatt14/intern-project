@@ -1,0 +1,11 @@
+spring:
+  main:
+    banner-mode: CONSOLE
+  application:
+    version: 1.0.0
+    name: E-RESOURCE-MANAGEMENT-SYSTEM
+  profiles:
+    active: dev
+server:
+  port: 8080
+
