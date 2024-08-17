@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
   datasource:
     url: jdbc:mysql://localhost/e-resource?allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false
     username: root
@@ -20,3 +24,14 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+
+image:
+  file:
+    path:
+      absolutePath: /home/test/cover-image/image/
+      relativePath: /image/cover-image/image/
+pdf:
+  file:
+    path:
+      absolutePath: /home/test/cover-pdf/pdf/
+      relativePath: /pdf/cover-pdf/pdf/
