@@ -6,8 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-    @Query("SELECT b FROM Book b JOIN FETCH b.collection WHERE b.id = :id")
-    Book findBookWithCollectionById(@Param("id") Long id);
+
+    List<Book> findByDisable(@Param("disable") boolean disable);
+    Optional<Book> findByIdAndDisableTrue(Long bookid );
+
+
 }

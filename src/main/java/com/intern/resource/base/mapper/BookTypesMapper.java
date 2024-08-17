@@ -9,9 +9,10 @@ public class BookTypesMapper {
             return null; // or handle as needed
         }
         return BookTypes.builder()
-                .typesId(bookTypesDTO.getTypesId())
+                .id(bookTypesDTO.getId())
                 .name(bookTypesDTO.getName())
                 .typesCode(bookTypesDTO.getTypesCode())
+                .disable(bookTypesDTO.isDisable())
                 .build();
     }
     public static BookTypesDTO entityToDTO(final BookTypes bookTypes) {
@@ -19,9 +20,10 @@ public class BookTypesMapper {
             return null; // or handle as needed
         }
         return BookTypesDTO.builder()
-                .typesId(bookTypes.getTypesId())
+                .id(bookTypes.getId())
                 .name(bookTypes.getName())
                 .typesCode(bookTypes.getTypesCode())
+                . disable(bookTypes.isDisable())
                 .build();
     }
 }
