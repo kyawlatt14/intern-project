@@ -10,7 +10,7 @@ public class UserMapper {
     public static User dtoToEntity(UserDTO dto) {
         User user = new User();
         user.setName(dto.getName());
-        user.setUserName(dto.getUserName());
+        user.setImagePath(dto.getImagePath());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
         user.setDisable(dto.isDisable());
@@ -21,7 +21,7 @@ public class UserMapper {
         return UserDTO.builder()
                 .userId(entity.getId())
                 .name(entity.getName())
-                .userName(entity.getName())
+
                 .email(entity.getEmail())
                 .password(entity.getPassword())
                 .disable(entity.isDisable())

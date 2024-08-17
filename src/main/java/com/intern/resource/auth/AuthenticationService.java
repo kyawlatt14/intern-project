@@ -14,9 +14,11 @@ import com.intern.resource.base.mapper.UserMapper;
 import com.intern.resource.base.repository.TokenRepository;
 import com.intern.resource.base.repository.UserRepository;
 import com.intern.resource.base.util.DateUtils;
+import com.intern.resource.base.util.FileUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,17 +35,29 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class AuthenticationService {
+    @Value("${image.file.path.absolutePath}")
+    private String imageAbsolutePath;
+
+    @Value("${image.file.path.relativePath}")
+    private String imageRelativePath;
 
     private final UserRepository repository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final IJwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final FileUtil fileUtil;
 
-    public MSISResponse register(UserDTO dto) {
+    public MSISResponse register(UserDTO dto) throws IOException {
         var existed = repository.findByEmail(dto.getEmail());
         if(!ObjectUtils.isEmpty(existed))
             throw new ApplicationErrorException(Constant.USER_EXISTED);
+        String imagePath = null;
+
+        if (null != dto.getImage() && !dto.getImage().isEmpty()) {
+            imagePath = fileUtil.writeMediaFile(dto.getImage(), imageAbsolutePath, imageRelativePath);
+            dto.setImagePath(imagePath);
+        }
         User user = UserMapper.dtoToEntity(dto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setDisable(true);

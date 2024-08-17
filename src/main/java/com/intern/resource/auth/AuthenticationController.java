@@ -19,10 +19,10 @@ public class AuthenticationController {
 
     private final AuthenticationService service;
 
-    @PostMapping("/register")
+    @PostMapping(value="/register",consumes = { "multipart/form-data" })
     public ResponseEntity<MSISResponse> register(
-            @RequestBody UserDTO dto
-    ) {
+            @ModelAttribute UserDTO dto
+    ) throws IOException {
         return ResponseEntity.ok(service.register(dto));
     }
     @PostMapping("/authenticate")

@@ -28,8 +28,14 @@ application:
 image:
   file:
     path:
-      absolutePath: /home/test/cover-image/image/
-      relativePath: /image/cover-image/image/
+      absolutePath: /home/test/user-image/image/
+      relativePath: /image/user-image/image/
+
+book:
+  file:
+    path:
+      absolutePath: /home/test/book/image/
+      relativePath: /image/book/image/
 pdf:
   file:
     path:

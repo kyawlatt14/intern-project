@@ -27,7 +27,7 @@ public class User implements UserDetails, Serializable {
 
     private String name;
 
-    private String userName;
+    private String imagePath;
 
     private String password;
 

@@ -37,7 +37,7 @@ public class RoleMapper {
                 .collect(Collectors.toList());
 
         return RoleDTO.builder()
-                .roleId(entity.getRoleId())
+                .roleId(entity.getId())
                 .roleName(entity.getRoleName())
                 .roleDesc(entity.getDescription())
                 .permissionDTOS(permissionDTOS)

@@ -52,7 +52,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         existingUser.setName(userDTO.getName());
-        existingUser.setUserName(userDTO.getUserName());
         existingUser.setEmail(userDTO.getEmail());
         existingUser.setPassword(userDTO.getPassword());
 
