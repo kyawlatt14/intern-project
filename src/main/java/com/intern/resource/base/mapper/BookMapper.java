@@ -11,20 +11,21 @@ import java.util.stream.Collectors;
 public class BookMapper {
     public static Book dtoToEntity(final BookDTO bookDTO) {
         Book.BookBuilder bookBuilder = Book.builder()
-                .bookId(bookDTO.getBookId())
+                .id(bookDTO.getId())
                 .author(bookDTO.getAuthor())
                 .mainTitle(bookDTO.getMainTitle())
                 .publisher(bookDTO.getPublisher())
                 .publisherYear(ObjectUtils.isEmpty(bookDTO.getPublisherYear())
                         ? DateUtils.getNowDate()
                         : DateUtils.stringToLongDate(bookDTO.getPublisherYear()))
-                .subtitle(bookDTO.getSubtitle());
+                .subtitle(bookDTO.getSubtitle())
+                .disable(bookDTO.isDisable());
         return bookBuilder.build();
     }
 
     public static BookDTO entityToDTO(final Book book) {
         BookDTO.BookDTOBuilder bookDTOBuilder = BookDTO.builder()
-                .bookId(book.getBookId())
+                .id(book.getId())
                 .author(book.getAuthor())
                 .mainTitle(book.getMainTitle())
                 .publisher(book.getPublisher())
@@ -33,13 +34,8 @@ public class BookMapper {
                 .publisherYear(ObjectUtils.isEmpty(book.getPublisherYear())
                         ? String.valueOf(DateUtils.getNowDate())
                         : DateUtils.longToStringDate(book.getPublisherYear()))
-                .subtitle(book.getSubtitle());
+                .subtitle(book.getSubtitle())
+                .disable(book.isDisable());
         return bookDTOBuilder.build();
-    }
-
-    public static List<BookDTO> entityToDTOList(final List<Book> books) {
-        return books.stream()
-                .map(BookMapper::entityToDTO)
-                .collect(Collectors.toList());
     }
 }

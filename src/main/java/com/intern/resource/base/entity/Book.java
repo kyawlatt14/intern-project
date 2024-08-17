@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bookId;
+    private Long id;
     private String mainTitle;
     private String subtitle;
     private String author;
@@ -27,4 +27,14 @@ public class Book {
     @ManyToOne(cascade = {CascadeType.DETACH})
     @JoinColumn(name = "book_types_id")
     private BookTypes bookTypes;
+    private boolean disable;
+
+    @PrePersist
+    public void onSave(){
+        this.disable=true;
+    }
+    @PreRemove
+    public void onDelete(){
+        this.disable=false;
+    }
 }

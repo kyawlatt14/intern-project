@@ -18,7 +18,7 @@ import java.util.List;
 public class BookTypes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long typesId;
+    private Long id;
     private String name;
     private String typesCode;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "bookTypes", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
@@ -28,5 +28,15 @@ public class BookTypes {
             books = new ArrayList<>();
         books.add(tempBook);
         tempBook.setBookTypes(this);
+    }
+    public boolean disable;
+
+    @PrePersist
+    public void onSave(){
+        this.disable=true;
+    }
+    @PreRemove
+    public void onDelete(){
+        this.disable=false;
     }
 }

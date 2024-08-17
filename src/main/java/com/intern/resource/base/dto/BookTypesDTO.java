@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookTypesDTO {
-    private Long typesId;
+    private Long id;
     private String name;
     private String typesCode;
+    private boolean disable;
 }

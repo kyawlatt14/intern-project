@@ -13,11 +13,15 @@ import com.intern.resource.base.repository.BookRepository;
 import com.intern.resource.base.repository.BookTypesRepository;
 import com.intern.resource.base.repository.CollectionRepository;
 import com.intern.resource.base.service.BookService;
+import com.intern.resource.base.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -27,6 +31,7 @@ public class BookServiceImpl implements BookService {
     private final BookTypesRepository bookTypesRepository;
 
     @Override
+    @Transactional
     public BookDTO saveBook(BookDTO bookDTO) {
         //saveEntity
         final Book book = bookRepository.save(BookMapper.dtoToEntity(bookDTO));
@@ -53,26 +58,13 @@ public class BookServiceImpl implements BookService {
         return bookDTO1;
     }
 
-    public BookDTO getBookById(Long id) {
-        final Book book = bookRepository.findById(id).orElse(null);
-        if (ObjectUtils.isEmpty(book.getCollection())) {
-            book.setCollection(new Collection());
-        }
-        if (ObjectUtils.isEmpty(book.getBookTypes())) {
-            book.setBookTypes(new BookTypes() );
-        }
-        return BookMapper.entityToDTO(book);
-    }
+
+
+
 
     @Override
-    public List<BookDTO> getAllBooks() {
-        List<Book> books=bookRepository.findAll();
-        return BookMapper.entityToDTOList(books);
-    }
-
-    @Override
+    @Transactional
     public BookDTO updateBook(Long bookId, BookDTO bookDTO) {
-
         Collection collection=collectionRepository.findById(bookDTO.getCollectionId()).orElseThrow();
         //  CollectionDTO collectionDTO = CollectionMapper.entityToDTO(collection);
 
@@ -83,6 +75,15 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new RuntimeException("Book not found"));
         existingBook.setBookTypes(bookTypes);
         existingBook.setCollection(collection);
+        existingBook.setMainTitle(bookDTO.getMainTitle());
+        existingBook.setAuthor(bookDTO.getAuthor());
+        existingBook.setPublisher(bookDTO.getPublisher());
+        existingBook.setPublisherYear(ObjectUtils.isEmpty(bookDTO.getPublisherYear())
+                ? DateUtils.getNowDate()
+                : DateUtils.stringToLongDate(bookDTO.getPublisherYear()));
+        existingBook.setSubtitle(bookDTO.getSubtitle());
+
+
 
         // Save the updated book back to the database
         Book updatedBook = bookRepository.save(existingBook);
@@ -94,7 +95,29 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteBook(Long bookId) {
-        bookRepository.deleteById(bookId);
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        // Clear the collection reference
+        book.setDisable(false);
+        bookRepository.save(book);
+
     }
 
+    @Override
+    @Transactional
+    public List<BookDTO> getBooksByEnableStatus(boolean disable) {
+        List<Book> books= bookRepository.findByDisable(disable);
+
+        return books.stream()
+                .map(BookMapper::entityToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<BookDTO> getBookIfEnabled(Long bookId) {
+        Optional<Book> optionalBook = bookRepository.findByIdAndDisableTrue(bookId);
+        return optionalBook.map(BookMapper::entityToDTO);
+    }
 }

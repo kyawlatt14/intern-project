@@ -28,7 +28,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfiguration {
 
   private static final String[] WHITE_LIST_URL = {
-          "/api/v1/auth/**",
+          "/api/v1/**",
           "/v2/api-docs",
           "/v3/api-docs",
           "/v3/api-docs/**",
@@ -52,14 +52,14 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(req ->
                     req.requestMatchers(WHITE_LIST_URL)
                             .permitAll()
-                            .requestMatchers("/api/v1/books/**").hasAnyRole("ADMIN","USER")
-                            .requestMatchers("/api/v1/collections/**").hasRole("ADMIN")
-                            .requestMatchers("/api/v1/bookTypes/**").hasRole("ADMIN")
-                            .requestMatchers("/api/v1/users/**").hasAnyRole("ADMIN", "USER")
-                            .requestMatchers("/api/v1/roles/**").hasRole("ADMIN")
-                            .requestMatchers("/api/v1/permissions/**").hasRole("ADMIN")
-                            .anyRequest()
-                            .authenticated()
+//                            .requestMatchers("/api/v1/books/**").hasAnyRole("ADMIN","USER")
+//                            .requestMatchers("/api/v1/collections/**").hasRole("ADMIN")
+//                            .requestMatchers("/api/v1/bookTypes/**").hasRole("ADMIN")
+//                            .requestMatchers("/api/v1/users/**").hasAnyRole("ADMIN", "USER")
+//                            .requestMatchers("/api/v1/roles/**").hasRole("ADMIN")
+//                            .requestMatchers("/api/v1/permissions/**").hasRole("ADMIN")
+//                            .anyRequest()
+//                            .authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
             .authenticationProvider(authenticationProvider)

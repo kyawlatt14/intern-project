@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookDTO {
-    private Long bookId;
+    private Long id;
     private String mainTitle;
     private String subtitle;
     private String author;
@@ -32,4 +32,5 @@ public class BookDTO {
     private String collectionName;
     @JsonIgnore
     private List<Book> books;
+    private boolean disable;
 }
