@@ -1,0 +1,6 @@
+git branch (branch check)
+git status (current branch check)
+git checkout -b new-branch-name(create new branch)
+git add .
+git commit -m "Your commit message"
+git push origin new-branch-name
