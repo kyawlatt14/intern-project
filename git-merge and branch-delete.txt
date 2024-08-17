@@ -1,0 +1,10 @@
+git checkout main (or) git switch main
+git pull origin main
+git merge branch-name
+git push origin main
+
+
+----------branch delete--------------
+git branch -d branch-name
+git branch -D branch-name (If the branch hasn't been merged and you want to force delete it)
+git push origin --delete branch-name (To delete a branch from the remote repository)
