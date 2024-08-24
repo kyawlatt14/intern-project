@@ -18,6 +18,12 @@ public class UserController {
 
     private final UserService userService;
 
+    @PostMapping("add-user")
+    public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO) {
+        UserDTO savedUser = userService.addUser(userDTO);
+        return ResponseEntity.ok(savedUser);
+    }
+
     @PutMapping("update-user")
     public ResponseEntity<UserDTO> updateUser(@RequestParam Long userId, @RequestBody UserDTO userDTO) {
         UserDTO updatedUser = userService.updateUser(userId, userDTO);

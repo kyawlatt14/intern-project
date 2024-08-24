@@ -9,6 +9,7 @@ import java.io.IOException;
 
 @Component
 public class FileUtil {
+
     public String writeMediaFile(MultipartFile multipartFile, String absolutePath, String relativePath)
             throws IllegalStateException, IOException {
         String fileName = multipartFile.getOriginalFilename();

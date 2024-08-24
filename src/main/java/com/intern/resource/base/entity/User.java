@@ -35,17 +35,11 @@ public class User implements UserDetails, Serializable {
 
     private boolean disable;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user",
-            cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;
-
-    public void add(Role tempRole) {
-        if (roles == null) {
-            roles = new ArrayList<>();
-        }
-        roles.add(tempRole);
-        tempRole.setUser(this);
-    }
 
     @PrePersist
     public void onSave() {
@@ -55,6 +49,11 @@ public class User implements UserDetails, Serializable {
     @PreRemove
     public void onDelete() {
         this.disable = false;
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+        role.getUsers().add(this);
     }
 
     @Override

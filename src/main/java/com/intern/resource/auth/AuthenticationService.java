@@ -11,6 +11,7 @@ import com.intern.resource.base.entity.User;
 import com.intern.resource.base.entity.enums.TokenType;
 import com.intern.resource.base.exception.ApplicationErrorException;
 import com.intern.resource.base.mapper.UserMapper;
+import com.intern.resource.base.repository.RoleRepository;
 import com.intern.resource.base.repository.TokenRepository;
 import com.intern.resource.base.repository.UserRepository;
 import com.intern.resource.base.util.DateUtils;
@@ -25,7 +26,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
@@ -35,6 +35,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class AuthenticationService {
+    private final RoleRepository roleRepository;
     @Value("${image.file.path.absolutePath}")
     private String imageAbsolutePath;
 
@@ -48,30 +49,29 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final FileUtil fileUtil;
 
+
     public MSISResponse register(UserDTO dto) throws IOException {
         var existed = repository.findByEmail(dto.getEmail());
         if(!ObjectUtils.isEmpty(existed))
             throw new ApplicationErrorException(Constant.USER_EXISTED);
+
+        User user = UserMapper.dtoToEntity(dto);
+//        Role defaultRole;
+//        if (ObjectUtils.isEmpty(dto.getUserRole())) {
+//             defaultRole = roleRepository.findByRoleName("USER");
+//            user.setRoles(List.of(defaultRole));
+//        }
+
         String imagePath = null;
 
         if (null != dto.getImage() && !dto.getImage().isEmpty()) {
             imagePath = fileUtil.writeMediaFile(dto.getImage(), imageAbsolutePath, imageRelativePath);
             dto.setImagePath(imagePath);
         }
-        User user = UserMapper.dtoToEntity(dto);
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setDisable(true);
-        if(CollectionUtils.isEmpty(user.getRoles())){
-            Role role = Role.builder()
-                    .roleName("USER")
-                    .description("test_user")
-                    .build();
-            role.setUser(user);
-        }else{
-            for (Role role : user.getRoles()) {
-                role.setUser(user);
-            }
-        }
+
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
@@ -90,6 +90,10 @@ public class AuthenticationService {
                 )
         );
         var user = repository.findByEmail(request.getEmail());
+
+        if (user == null || user.isDisable()) {
+            return MSISResponse.fail(Constant.USER_NOT_FOUND, "User is disabled or not found");
+        }
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
@@ -156,5 +160,19 @@ public class AuthenticationService {
         return ObjectUtils.isEmpty(users)?
                 MSISResponse.fail("Fail!"):
                 MSISResponse.success("Success",users);
+    }
+
+    public MSISResponse selfRegister(UserDTO dto) {
+
+        boolean user = repository.existsByName(dto.getName());
+        if (user) {
+            throw new ApplicationErrorException("User is already existed");
+        }
+        User savedUser = repository.save(User.builder()
+                        .name(dto.getName())
+                        .email(dto.getEmail())
+                        .password(passwordEncoder.encode(dto.getPassword()))
+                .build());
+        return MSISResponse.success("Success", UserMapper.entityToDto(savedUser));
     }
 }

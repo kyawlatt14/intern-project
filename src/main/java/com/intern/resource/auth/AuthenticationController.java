@@ -19,12 +19,18 @@ public class AuthenticationController {
 
     private final AuthenticationService service;
 
+    @PostMapping("/selfRegister")
+    public ResponseEntity<MSISResponse> selfRegister(@RequestBody UserDTO dto) {
+        return ResponseEntity.ok(service.selfRegister(dto));
+    }
+
     @PostMapping(value="/register",consumes = { "multipart/form-data" })
     public ResponseEntity<MSISResponse> register(
             @ModelAttribute UserDTO dto
     ) throws IOException {
         return ResponseEntity.ok(service.register(dto));
     }
+
     @PostMapping("/authenticate")
     public ResponseEntity<MSISResponse> authenticate(
             @RequestBody AuthenticationRequest request

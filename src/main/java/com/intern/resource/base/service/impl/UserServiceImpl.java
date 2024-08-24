@@ -11,9 +11,9 @@ import com.intern.resource.base.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,26 +27,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDTO saveUser(UserDTO userDTO) {
-        User user = UserMapper.dtoToEntity(userDTO);
-        user.setDisable(true);
-        if(CollectionUtils.isEmpty(user.getRoles())){
-             Role role = Role.builder()
-                     .roleName("USER")
-                     .description("test_user")
-                     .build();
-            role.setUser(user);
-        }else{
-            for (Role role : user.getRoles()) {
-                role.setUser(user);
-            }
-        }
-        User savedUser = userRepository.save(user);
-        return UserMapper.entityToDto(savedUser);
-    }
-
-    @Override
-    @Transactional
     public UserDTO updateUser(Long userId, UserDTO userDTO) {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -54,7 +34,6 @@ public class UserServiceImpl implements UserService {
         existingUser.setName(userDTO.getName());
         existingUser.setEmail(userDTO.getEmail());
         existingUser.setPassword(userDTO.getPassword());
-
         existingUser.getRoles().clear();
 
         List<Role> updatedRoles = new ArrayList<>();
@@ -64,10 +43,8 @@ public class UserServiceImpl implements UserService {
 
             role.setRoleName(roleDTO.getRoleName());
             role.setDescription(roleDTO.getRoleDesc());
-            role.setUser(existingUser);
             updatedRoles.add(role);
         }
-
         existingUser.setRoles(updatedRoles);
         userRepository.save(existingUser);
         return UserMapper.entityToDto(existingUser);
@@ -100,5 +77,28 @@ public class UserServiceImpl implements UserService {
         Optional<User> optUser = userRepository.findByIdAndDisable(userId, true);
 
         return optUser.map(UserMapper::entityToDto);
+    }
+
+    @Override
+    @Transactional
+    public UserDTO addUser(UserDTO userDTO) {
+        User user = UserMapper.dtoToEntity(userDTO);
+        Role role = roleRepository.findByRoleName(userDTO.getRoles().get(0).getRoleName());
+        user.setRoles(Collections.singletonList(role));
+
+        User savedUser = userRepository.save(user);
+        return UserMapper.entityToDto(savedUser);
+    }
+
+    @Override
+    public User assignRolesToUser(Long userId, List<Long> roleIds) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setDisable(false);
+
+        List<Role> roles = roleRepository.findAllByIdIn(roleIds);
+        user.getRoles().addAll(roles);
+        return userRepository.save(user);
     }
 }
